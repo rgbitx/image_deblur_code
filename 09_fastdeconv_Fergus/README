@@ -1,0 +1,47 @@
+The Matlab functions in this directory solve the deconvolution problem in the
+paper D. Krishnan, R. Fergus: "Fast Image Deconvolution using
+Hyper-Laplacian Priors", Proceedings of NIPS 2009. 
+
+The code has been tested on Matlab 7.9 (R2009b). Our paper and the
+code are related to the work and code of Wang et. al.:
+
+Y. Wang, J. Yang, W. Yin and Y. Zhang, "A New Alternating Minimization
+Algorithm for Total Variation Image Reconstruction", SIAM Journal on
+Imaging Sciences, 1(3): 248:272, 2008, and their FTVd code.
+  
+The files in this directory are:
+
+test_fast_deconv.m: A test script that reads in an image, adds noise
+and blur to it and calls the deblurring function. The parameter values
+lambda and alpha are set here. Noise level can be controlled as
+well. Run this script in Matlab as "test_fast_deconv".
+
+fast_deconv.m: The main non-blind deconvolution function that takes in
+the blurry/noisy image, blur kernel, lambda and alpha values and
+outputs a deblurred image. The parameters for the alternating
+minimization scheme are set in this function.
+
+snr.m: Computes Signal-to-Noise ratio between an input image and a
+reference image. 
+
+solve_image.m: Either computes a look-up-table to solve the w
+sub-problem, or uses the existing look-up-table. The LUT is stored as
+a persistent variable. There are a number of functions in this file to
+compute the entries of the LUT for different values of alpha.
+
+We use the MeX function pointOp from Eero Simoncelli's
+matlabPyrTools. Please download this from:
+www.cns.nyu.edu/~lcv/software.php and compile the pointOp MeX
+function.  The function should be
+visible from the directory where test_fast_deconv is run. If it is not
+visible, fast_deconv will revert to using the much slower Matlab
+function interp1 for LUT interpolation/extrapolation.
+
+Update: January 1, 2010: A serious bug was found in the previously
+uploaded version of the code from December 2009 - the test function
+should output a deblurred clocktower image with SNR about 18dB (earlier, 
+the bug cause the output blurred data to be 15dB).
+
+Copyright (C) 2009: D. Krishnan, R. Fergus. 
+Email: {dilip,fergus}@cs.nyu.edu
+
