@@ -41,12 +41,12 @@ dt=1; h=1;
 iter=100;      % iterations
 % %fixed the size of kernel, result seems better, but time consuming
 % %   kernel = zeros(k1,k2);
-      I_X = conv2(B, [-1,1;0,0], 'valid'); %vertical edges
-      I_Y = conv2(B, [-1,0;1,0], 'valid'); %
-      I_mag = sqrt(I_X.^2+I_Y.^2);
-      [k1,k2]= size(kernel);
-      edge_thresh = determine_truck(I_X, I_Y, I_mag,k1,k2);
-      clear I_X I_Y I_mag;
+  I_X = conv2(B, [-1,1;0,0], 'valid'); %vertical edges
+  I_Y = conv2(B, [-1,0;1,0], 'valid'); %
+  I_mag = sqrt(I_X.^2+I_Y.^2);
+  [k1,k2]= size(kernel);
+  edge_thresh = determine_truck(I_X, I_Y, I_mag,k1,k2);
+  clear I_X I_Y I_mag;
   for itr=maxitr+1:-1:1
       cret=retv(itr);
       Bp=downSmpImC(B,cret);

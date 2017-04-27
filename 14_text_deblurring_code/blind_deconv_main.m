@@ -47,7 +47,7 @@ for iter = 1:opts.xk_iter
    if lambda_pixel~=0
        %% For acceleration???
 %        if max(size(blur_B_w))<512
-           S = L0Deblur_whole(blur_B_w, k, lambda_pixel, lambda_grad, 2.0);
+       S = L0Deblur_whole(blur_B_w, k, lambda_pixel, lambda_grad, 2.0);
 %        else %% With GPU type acceleration
 %            S = L0Deblur_whole_fast(blur_B_w, k, lambda_pixel, lambda_grad, 2.0);
 %        end

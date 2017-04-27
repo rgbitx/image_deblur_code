@@ -10,13 +10,13 @@ end
 A0=(A+A')/2; 
 clear A;
 opts = optimset('Display','off');
-%k=quadprog(A0,-b,[],[],[],[],zeros(k_sz1*k_sz2,1),[],[],opts);
-k = qpas(A0, -b,[],[],[],[],zeros(k_sz1*k_sz2,1));
+k=quadprog(A0,-b,[],[],[],[],zeros(k_sz1*k_sz2,1),[],[],opts);
+% k = qpas(A0, -b,[],[],[],[],zeros(k_sz1*k_sz2,1));
 
-for itr=1:2%20 modified 2011-07-10 22:00:08
+for itr=1:2 %20 modified 2011-07-10 22:00:08
   w=max(abs(k),thr_0).^(exp_a-2);
-  %k=quadprog(A0+scla*diag(w),-b,[],[],[],[],zeros(k_sz1*k_sz2,1),[],[],opts);
-   k = qpas(A0+scla*diag(w),-b,[],[],[],[],zeros(k_sz1*k_sz2,1));
+  k=quadprog(A0+scla*diag(w),-b,[],[],[],[],zeros(k_sz1*k_sz2,1),[],[],opts);
+%    k = qpas(A0+scla*diag(w),-b,[],[],[],[],zeros(k_sz1*k_sz2,1));
  %%
 end
  kernel=reshape(k,k_sz1,k_sz2);
