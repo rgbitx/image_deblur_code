@@ -60,9 +60,11 @@ iter=100;      % iterations
           % evolution
           r = gradient_confidence_full(Bp,window_size);
           r= exp(-r.^(0.8));
+          tic
           structure = structure_adaptive_map( I,lambda_texture*r, 100);
           I_= shock(structure,iter,dt,h,'org');
           structure = I_;
+          toc
           %%%%%%%%%%%compute the gradient of I
           I_x = conv2(structure, [-1,1;0,0], 'valid'); %vertical edges
           I_y = conv2(structure, [-1,0;1,0], 'valid'); % horizontal edges
