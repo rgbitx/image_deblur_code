@@ -29,8 +29,10 @@ S = blur_B;
 for iter = 1:opts.xk_iter
     %% latent image deblurring
     % salient structure extraction    
-    blur_B = padarray(blur_B, [1 1] * bhs, 'replicate', 'both');    
+    blur_B = padarray(blur_B, [1 1] * bhs, 'replicate', 'both'); 
+    tic
     S = deblurring_adm_aniso_1(blur_B, k,  0.001, 0.5, 0.05, max(size(k(1,2))));
+    toc
     S = S(bhs + 1 : end - bhs, bhs + 1 : end - bhs, :);
     blur_B = blur_B(bhs + 1 : end - bhs, bhs + 1 : end - bhs, :);
     blur_B = blur_B(1:H,1:W,:);
@@ -48,9 +50,9 @@ for iter = 1:opts.xk_iter
     k_prev = k;
     
     % kernel estimation
-    tic
+    
     k = estimate_psf(Bx, By, latent_x, latent_y, 2, size(k_prev));
-    toc
+    
    %%%%%%%%%%%%%%%%%%%%%%%%%%
     %% Hu et al
     CC = bwconncomp(k,8);

@@ -83,7 +83,10 @@ iter=100;      % iterations
           toc
           
           tic
-          I = deconv_ansio_L1(Bp,kernel,lambda_smooth,100);
+          lambda_grad = 4e-3;
+%           I = deconv_ansio_L1(Bp,kernel,lambda_smooth,100);
+          I = L0Restoration(Bp, kernel, lambda_grad, 2.0);
+%           I = estimate_I(Bp,kernel,10);
           toc
           
           fprintf('%d iterations of pyramid %d is done\n', i, itr);

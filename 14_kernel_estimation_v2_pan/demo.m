@@ -12,7 +12,9 @@ lambda_kernel_smooth = 1e-5; %(Adjustable, typically 1e-5, 1e-4, 1e-3)
 display = 1;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% example 1
-filename = 'image/details_blur2_45.png';
+% filename = 'image/details_blur2_45.png';
+filename = 'image/image3.png';
+
 % kernel_sizeh = 45; kernel_sizew = 45;
 kernel_sizeh = 35; kernel_sizew = 35;
 
