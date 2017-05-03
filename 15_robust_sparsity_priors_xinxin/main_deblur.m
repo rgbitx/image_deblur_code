@@ -14,7 +14,7 @@ opts.struct = 0.001;
 opts.a = 0.01; % 0.01
 opts.b = 1.5;  % 1.5 
 
-fn = 'image3.png'; opts.kernel_size = [25 25]; mu = 1500; % 0.1  mu=1000; % dt=0.25
+fn = 'blurred.png'; opts.kernel_size = [25 25]; mu = 1500; % 0.1  mu=1000; % dt=0.25
 
 %% use Hyper-Laplacian priors to estimate L
 

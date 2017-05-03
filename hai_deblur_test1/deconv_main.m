@@ -113,7 +113,8 @@ iter=100;      % iterations
           end
           
           tic
-          kernel =solve_kernel_irls(A,b,k1,k2,lambda_kernel, lambda_kernel_smooth);
+          %kernel =solve_kernel_irls(A,b,k1,k2,lambda_kernel, lambda_kernel_smooth);
+          kernel=estimate_psf(Bx, By, I_x, I_y, 2, size(kernel));
           toc
           
           I = deconv_ansio_L1(Bp,(kernel),lambda_smooth,100);
