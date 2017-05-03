@@ -13,8 +13,8 @@ display = 1;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% example 1
 filename = 'image/details_blur2_45.png';
-% kernel_sizeh = 45; kernel_sizew = 45;
-kernel_sizeh = 35; kernel_sizew = 35;
+kernel_sizeh = 45; kernel_sizew = 45;
+% kernel_sizeh = 35; kernel_sizew = 35;
 
 lambda_kernel_smooth = 1e-5;
 % %% example 2

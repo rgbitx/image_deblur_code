@@ -58,7 +58,7 @@ iter=100;      % iterations
   %For each level
       for i = 1:5
           % evolution
-          tic
+          
           r = gradient_confidence_full(Bp,window_size);
           r= exp(-r.^(0.8));
           
@@ -77,47 +77,14 @@ iter=100;      % iterations
           %exclude the edge
           I_x(1:2,:) =0;I_x(end-1:end,:) = 0;I_x(:,1:2) =0;I_x(:,end-1:end) = 0;
           I_y(1:2,:) =0;I_y(end-1:end,:) = 0;I_y(:,1:2) =0;I_y(:,end-1:end) = 0;
-          if size(I_x) ==size(Bx)
-              [N1,N2]=size(I_x);
-              hfs1_x1=floor((size(kernel,2)-1)/2);
-              hfs1_x2=ceil((size(kernel,2)-1)/2);
-              hfs1_y1=floor((size(kernel,1)-1)/2);
-              hfs1_y2=ceil((size(kernel,1)-1)/2);
-              hfs_x1=hfs1_x1;
-              hfs_x2=hfs1_x2;
-              hfs_y1=hfs1_y1;
-              hfs_y2=hfs1_y2;
-              N2=N2+hfs_x1+hfs_x2;
-              N1=N1+hfs_y1+hfs_y2;
-              N=N1*N2;
-              mask=zeros(N1,N2);
-              mask(hfs_y1+1:N1-hfs_y2,hfs_x1+1:N2-hfs_x2)=1;
-              tI_x=I_x;
-              I_x=zeros(N1,N2);
-              I_x(hfs_y1+1:N1-hfs_y2,hfs_x1+1:N2-hfs_x2)=tI_x;
-              tI_y=I_y;
-              I_y=zeros(N1,N2);
-              I_y(hfs_y1+1:N1-hfs_y2,hfs_x1+1:N2-hfs_x2)=tI_y;
-          end
-          toc
-          
-          
-          [k1,k2] = size(kernel);
-          A=zeros(k1*k2);
-          b=zeros(k1*k2,1);
-          for j=1:size(I,3)
-              A = A+ getAutoCor(I_x(:,:,j),k1,k2);
-              b = b+getCory(I_x(:,:,j),Bx(:,:,j),k1,k2);
-              A = A+ getAutoCor(I_y(:,:,j),k1,k2);
-              b = b+getCory(I_y(:,:,j),By(:,:,j),k1,k2);
-          end
-          
+                       
           tic
-          %kernel =solve_kernel_irls(A,b,k1,k2,lambda_kernel, lambda_kernel_smooth);
           kernel=estimate_psf(Bx, By, I_x, I_y, 2, size(kernel));
           toc
           
-          I = deconv_ansio_L1(Bp,(kernel),lambda_smooth,100);
+          tic
+          I = deconv_ansio_L1(Bp,kernel,lambda_smooth,100);
+          toc
           
           fprintf('%d iterations of pyramid %d is done\n', i, itr);
           %% for test
