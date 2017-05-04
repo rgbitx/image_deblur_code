@@ -79,12 +79,32 @@ iter=100;      % iterations
           I_y(1:2,:) =0;I_y(end-1:end,:) = 0;I_y(:,1:2) =0;I_y(:,end-1:end) = 0;
                        
           tic
-          kernel=estimate_psf(Bx, By, I_x, I_y, 2, size(kernel));
+          ks=estimate_psf(Bx, By, I_x, I_y, 2, size(kernel));
+          
+          %% center the kernel
+            ks = adjust_psf_center(ks);
+            ks(ks(:)<0) = 0;
+            sumk = sum(ks(:));
+            ks = ks./sumk;
+            kernel=ks;
+%             if (s == 1)
+%                  kernel = ks;
+%                 if opts.k_thresh>0
+%                     kernel(kernel(:) < max(kernel(:))/opts.k_thresh) = 0;
+%                 else
+%                     kernel(kernel(:) < 0) = 0;
+%                 end
+%                     kernel = kernel / sum(kernel(:));
+%             end;
+          
           toc
           
           tic
-          lambda_grad = 4e-3;
+          lambda_pixel = 4e-3;
+          lambda_grad = 4e-4;
 %           I = deconv_ansio_L1(Bp,kernel,lambda_smooth,100);
+%           I = L0Deblur_whole(Bp, kernel, lambda_pixel, lambda_grad, 2.0);
+
           I = L0Restoration(Bp, kernel, lambda_grad, 2.0);
 %           I = estimate_I(Bp,kernel,10);
           toc

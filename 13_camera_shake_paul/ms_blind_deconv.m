@@ -120,8 +120,9 @@ for s = 1:num_scales
        opts.xk_iter = opts.final_scale_xk_iter; 
    end
    
+   tic
    [ls, k] = ss_blind_deconv(g, ls, k, opts);
-   
+   toc
    % center the kernel
    [ls{1}, ls{2}, k] = center_kernel_separate(ls{1}, ls{2}, k);   
 end
