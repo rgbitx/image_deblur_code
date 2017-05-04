@@ -2,17 +2,17 @@ clc;
 clear;
 close all;
 addpath(genpath('image'));
- %parameter setting
- lambda_kernel = 0.01;% 0.01
- lambda_smooth = 0.005;%
- lambda_texture = 1;
+%parameter setting
+lambda_kernel = 0.01;% 0.01
+lambda_smooth = 0.005;%
+lambda_texture = 1;
 window_size = 45;
 lambda_kernel_smooth = 1e-5; %(Adjustable, typically 1e-5, 1e-4, 1e-3)
 % if the kernel contains obvious noise, large value may help (e.g., for test1_blur.png (1e-3))
 display = 1;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% example 1
-filename = 'image/wall.png';
+filename = 'image/details_blur2_45.png';
 % filename = 'image/image3.png';
 kernel_sizeh = 30; kernel_sizew = 30;
 % kernel_sizeh = 35; kernel_sizew = 35;

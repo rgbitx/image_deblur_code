@@ -26,7 +26,7 @@ end
  %for rmap test
  %k = smoothing_kernel(kernel, 1e-3, 1.5);
  if lambda_kernel_smooth~=0
-%      k = smoothing_kernel(kernel, lambda_kernel_smooth, 1.5);
+     k = smoothing_kernel(kernel, lambda_kernel_smooth, 1.5);
  end
 
  k(k<0) =0;

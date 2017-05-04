@@ -24,8 +24,11 @@ function [kernel, latent] = deconv_main(B, ori_B, lambda_kernel, lambda_smooth,.
 
 ret = sqrt(0.5);
  %%initialize the kernel 
- kernel = zeros(k1,k2);
+kernel = zeros(k1,k2);
 maxitr=max(floor(log(5/min(k1,k2))/log(ret)),0);
+
+thresholdR = 1;
+thresholdS = 2;
 
 retv=ret.^[0:maxitr];
 
@@ -58,13 +61,17 @@ iter=100;      % iterations
   %For each level
       for i = 1:5
           % evolution
-          
+          tic
           r = gradient_confidence_full(Bp,window_size);
-          r= exp(-r.^(0.8));
+          toc
           
-          structure = structure_adaptive_map( I,lambda_texture*r, 100);
-          I_= shock(structure,iter,dt,h,'org');
-          structure = I_;
+          tic
+%           r= exp(-r.^(0.8));        
+%           structure = structure_adaptive_map( I,lambda_texture*r, 100);
+%           I_= shock(structure,iter,dt,h,'org');
+%           structure = I_;
+          structure= shock(I,iter,dt,h,'org');
+          toc
           
           %%%%%%%%%%%compute the gradient of I
           I_x = conv2(structure, [-1,1;0,0], 'valid'); %vertical edges
@@ -72,6 +79,9 @@ iter=100;      % iterations
           Bx = conv2(Bp, [-1,1;0,0], 'valid'); %vertical edges
           By = conv2(Bp, [-1,0;1,0], 'valid'); 
           I_mag = sqrt(I_x.^2+I_y.^2);
+          
+          M = heaviside_function(I_mag, thresholdR);
+          
           I_x = I_x.*heaviside_function(I_mag,edge_thresh);
           I_y = I_y.*heaviside_function(I_mag,edge_thresh);
           %exclude the edge
