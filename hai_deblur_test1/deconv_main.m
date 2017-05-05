@@ -30,6 +30,9 @@ maxitr=max(floor(log(5/min(k1,k2))/log(ret)),0);
 thresholdR = 1;
 thresholdS = 2;
 
+
+B=imgaussfilt(B,1.2);
+
 retv=ret.^[0:maxitr];
 
 k1list=ceil(k1*retv);
@@ -61,17 +64,15 @@ iter=100;      % iterations
   %For each level
       for i = 1:5
           % evolution
-          tic
           r = gradient_confidence_full(Bp,window_size);
-          toc
           
-          tic
 %           r= exp(-r.^(0.8));        
-%           structure = structure_adaptive_map( I,lambda_texture*r, 100);
+%           structure = structure_adaptive_map( I,lambda_texture*r, 100);          
 %           I_= shock(structure,iter,dt,h,'org');
 %           structure = I_;
+          
           structure= shock(I,iter,dt,h,'org');
-          toc
+          
           
           %%%%%%%%%%%compute the gradient of I
           I_x = conv2(structure, [-1,1;0,0], 'valid'); %vertical edges
@@ -80,14 +81,27 @@ iter=100;      % iterations
           By = conv2(Bp, [-1,0;1,0], 'valid'); 
           I_mag = sqrt(I_x.^2+I_y.^2);
           
-          M = heaviside_function(I_mag, thresholdR);
+%           I_x = I_x.*heaviside_function(I_mag,edge_thresh);
+%           I_y = I_y.*heaviside_function(I_mag,edge_thresh);
           
-          I_x = I_x.*heaviside_function(I_mag,edge_thresh);
-          I_y = I_y.*heaviside_function(I_mag,edge_thresh);
+          
+          [r1,c1]=size(I_x);
+          MaskR = heaviside_function(r(1:r1,1:c1), thresholdR);
+           
+          I_x = I_x.*heaviside_function(MaskR.*I_mag,thresholdS);
+          I_y = I_y.*heaviside_function(MaskR.*I_mag,thresholdS);
+          
           %exclude the edge
           I_x(1:2,:) =0;I_x(end-1:end,:) = 0;I_x(:,1:2) =0;I_x(:,end-1:end) = 0;
           I_y(1:2,:) =0;I_y(end-1:end,:) = 0;I_y(:,1:2) =0;I_y(:,end-1:end) = 0;
                        
+          if (sum(I_x)<1e-6) | (sum(I_y)<1e-6)
+              thresholdR = thresholdR/1.1;
+              thresholdS = thresholdS/1.1;
+              i=i+1;
+              continue;
+          end
+          
           tic
           ks=estimate_psf(Bx, By, I_x, I_y, 2, size(kernel));
           
@@ -130,6 +144,10 @@ iter=100;      % iterations
           dt = dt/1.1;
           lambda_texture = lambda_texture/1.1;
           edge_thresh = edge_thresh/1.1;
+          
+          thresholdR = thresholdR/1.1;
+          thresholdS = thresholdS/1.1;
+          
       end
       if (itr>1)
           kernel=resizeKer(kernel,1/ret,k1list(itr-1),k2list(itr-1));
