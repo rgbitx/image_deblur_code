@@ -145,6 +145,18 @@ iter=100;      % iterations
   toc
 kernel = kernel/sum(kernel(:));
 latent = [];
+
+%% kernel refine
+
+% get epsilon_s
+sorted_k = sort(kernel(:));
+dif_sorted_k = diff(sorted_k);
+
+
+
+
+
+%% final deblur
 fprintf('image deblurring...\n');
 for c= 1:size(ori_B,3)
     latent(:,:,c) = deconvSps(ori_B(:,:,c),kernel,0.003,100);
