@@ -31,7 +31,7 @@ thresholdR = 1;
 thresholdS = 2;
 
 
-B=imgaussfilt(B,1);
+% B=imgaussfilt(B,1);
 
 retv=ret.^[0:maxitr];
 
@@ -45,7 +45,7 @@ kernel=resizeKer(kernel,cret,k1list(end),k2list(end));
 % parameters
 dt=1; h=1;
 iter=100;      % iterations
-  tic
+
   for itr=maxitr+1:-1:1
       cret=retv(itr);
       Bp=downSmpImC(B,cret);
@@ -98,7 +98,7 @@ iter=100;      % iterations
               continue;
           end
           
-          
+          tic
           ks=estimate_psf(Bx, By, I_x, I_y, 2, size(kernel));
           
          %% center the kernel
@@ -106,16 +106,16 @@ iter=100;      % iterations
           ks(ks(:)<0) = 0;
           ks = ks./sum(ks(:));
           kernel=ks;         
+          toc
           
-          
-          
+          tic
           lambda_pixel = 4e-3;
           lambda_grad = 4e-4;
 %           I = deconv_ansio_L1(Bp,kernel,lambda_smooth,100);
 %           I = L0Deblur_whole(Bp, kernel, lambda_pixel, lambda_grad, 2.0);
 
           I = L0Restoration(Bp, kernel, lambda_grad, 2.0);
-          
+          toc
           I(I<0) = 0;
           I(I>1) = 1;
           
@@ -133,7 +133,6 @@ iter=100;      % iterations
           thresholdS = thresholdS/1.2;
           i=i+1;
       end
-      
       if (itr>1)
           kernel=resizeKer(kernel,1/ret,k1list(itr-1),k2list(itr-1));
           kernel = adjust_psf_center(kernel);
@@ -142,7 +141,6 @@ iter=100;      % iterations
       end
       
   end
-  toc
 kernel = kernel/sum(kernel(:));
 latent = [];
 fprintf('image deblurring...\n');
