@@ -149,8 +149,8 @@ latent = [];
 %% kernel refine
 
 % get epsilon_s
-sorted_k = sort(kernel(:));
-dif_sorted_k = diff(sorted_k);
+% sorted_k = sort(kernel(:));
+% dif_sorted_k = diff(sorted_k);
 
 
 
