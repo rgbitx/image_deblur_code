@@ -10,7 +10,6 @@ k = kernel;
 
 for it=1:5
 
-
 threshD = 7 * norm(k,inf)/(2*width*height*5);
 % threshD = norm(kernel,inf)/(2*width*it);
 

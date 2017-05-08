@@ -28,7 +28,8 @@ if nargin == 3
   fprintf('Input options not defined - really no reg/constraints on the kernel?\n');
 end
 
-lambda = opts.lambda;
+% lambda = opts.lambda;
+lambda = 1;
 pcg_tol = opts.pcg_tol;
 pcg_its = opts.pcg_its;
   

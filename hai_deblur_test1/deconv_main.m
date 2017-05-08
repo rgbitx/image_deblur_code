@@ -31,7 +31,7 @@ thresholdR = 1;
 thresholdS = 2;
 
 
-B=imgaussfilt(B,1);
+% B=imgaussfilt(B,1.6);
 
 retv=ret.^[0:maxitr];
 
@@ -93,8 +93,8 @@ iter=100;      % iterations
           I_y(1:2,:) =0;I_y(end-1:end,:) = 0;I_y(:,1:2) =0;I_y(:,end-1:end) = 0;
                        
           if (any(I_x(:))==0) || (any(I_y(:))==0)
-              thresholdR = thresholdR/1.2;
-              thresholdS = thresholdS/1.2;
+              thresholdR = thresholdR/1.1;
+              thresholdS = thresholdS/1.1;
               continue;
           end
           
@@ -106,7 +106,6 @@ iter=100;      % iterations
           ks(ks(:)<0) = 0;
           ks = ks./sum(ks(:));
           kernel=ks;         
-          
           
           
           lambda_pixel = 4e-3;
@@ -129,16 +128,16 @@ iter=100;      % iterations
           end
           dt = dt/1.1;
           lambda_texture = lambda_texture/1.1;
-          thresholdR = thresholdR/1.2;
-          thresholdS = thresholdS/1.2;
+          thresholdR = thresholdR/1.1;
+          thresholdS = thresholdS/1.1;
           i=i+1;
       end
       
       if (itr>1)
           kernel=resizeKer(kernel,1/ret,k1list(itr-1),k2list(itr-1));
-          kernel = adjust_psf_center(kernel);
-          kernel(kernel<0) = 0;
-          kernel = kernel./sum(kernel(:));
+%           kernel = adjust_psf_center(kernel);
+%           kernel(kernel<0) = 0;
+%           kernel = kernel./sum(kernel(:));
       end
       
   end
@@ -148,14 +147,54 @@ latent = [];
 
 %% kernel refine
 
-% get epsilon_s
-% sorted_k = sort(kernel(:));
-% dif_sorted_k = diff(sorted_k);
+%%%%get epsilon_s
+% threshold for epsilon_s
+[width,height] = size(kernel);
+k = kernel;
+
+% threshD = norm(kernel,inf)/(2*width*it);
+
+for it=1:5
+    
+threshD = norm(k,inf)/(2*width*it);
+
+sorted_k = sort(k(:));
+nonzero_index = find(sorted_k>0);
+first_nonzero_index = nonzero_index(1);
+
+diff_sorted_k = diff(sorted_k);
+all_index = find(diff_sorted_k(first_nonzero_index:end)>threshD);
+
+if isempty(all_index)
+   continue; 
+end
+
+epsilon_s = sorted_k(all_index(1)+first_nonzero_index);
+
+mask_s = heaviside_function(k,epsilon_s);
+mask_s_ = ~mask_s;
+
+s = mask_s .* k;
+s_ = mask_s_ .* k;
+
+% set up options for the kernel estimation
+
+k_prev = k;
+figure,imagesc(k);
+
+k = psf_refine_irls(Bx, By, I_x, I_y, s_, 2, size(kernel));
+k = adjust_psf_center(k);
+k(k(:)<0) = 0;
+k = k./sum(k(:));
+epsilon_k = norm(k-k_prev)/norm(k_prev);
 
 
+figure,imagesc(s);
+figure,imagesc(s_);
 
+end
 
-
+kernel = k;
 %% final deblur
 fprintf('image deblurring...\n');
 for c= 1:size(ori_B,3)
