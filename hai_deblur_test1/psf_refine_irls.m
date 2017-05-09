@@ -1,4 +1,4 @@
-function psf = psf_refine_irls(blurred_x, blurred_y, latent_x, latent_y, s_, weight, psf_size)
+function psf = psf_refine_irls(blurred_x, blurred_y, latent_x, latent_y, kernel0, s_, weight, psf_size)
 
   %2013/5/31  %%%%%%%%%%%%%%%%%%%%%%%%%
     latent_xf = fft2(latent_x);
@@ -15,13 +15,14 @@ function psf = psf_refine_irls(blurred_x, blurred_y, latent_x, latent_y, s_, wei
     p.psf_size = psf_size;
     p.lambda = weight;
     p.s_ = s_;
+    exp_a = 1;
 
 %     psf = ones(psf_size) / prod(psf_size);
-    psf = zeros(psf_size);
+    psf = kernel0;
 
-    for iter = 1:3
+    for iter = 1:2
         psf_prev = psf;
-        p.weights = p.lambda  * p.s_ / (max(norm(psf_prev,1),1e-5));                
+        p.weightsl1 = p.lambda * (max(norm(psf_prev,1),1e-4) .^ (exp_a-2));                
         psf = conjgrad(psf, b, 20, 1e-5, @compute_Ax, p);
 
         psf(psf < max(psf(:))*0.05) = 0;
@@ -34,5 +35,5 @@ end
 function y = compute_Ax(x, p)
     x_f = psf2otf(x, p.img_size);
     y = otf2psf(p.m .* x_f, p.psf_size);
-    y = y + p.weights .* x;
+    y = y + p.weightsl1 * p.s_;
 end

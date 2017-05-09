@@ -181,16 +181,15 @@ s_ = mask_s_ .* k;
 
 k_prev = k;
 figure,imagesc(k);
+figure,imagesc(s);
+figure,imagesc(s_);
 
-k = psf_refine_irls(Bx, By, I_x, I_y, s_, 2, size(kernel));
+k = psf_refine_irls(Bx, By, I_x, I_y, k, s_, 2, size(kernel));
 k = adjust_psf_center(k);
 k(k(:)<0) = 0;
 k = k./sum(k(:));
-epsilon_k = norm(k-k_prev)/norm(k_prev);
+epsilon_k = norm(k-k_prev)/norm(k_prev)
 
-
-figure,imagesc(s);
-figure,imagesc(s_);
 
 end
 
