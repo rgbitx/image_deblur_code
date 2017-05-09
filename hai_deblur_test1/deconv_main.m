@@ -45,6 +45,14 @@ kernel=resizeKer(kernel,cret,k1list(end),k2list(end));
 % parameters
 dt=1; h=1;
 iter=100;      % iterations
+
+% I_X = conv2(B, [-1,1;0,0], 'valid'); %vertical edges
+% I_Y = conv2(B, [-1,0;1,0], 'valid'); %
+% I_mag = sqrt(I_X.^2+I_Y.^2);
+% [k1,k2]= size(kernel);
+% edge_thresh = determine_truck(I_X, I_Y, I_mag,k1,k2);
+% clear I_X I_Y I_mag;
+
   tic
   for itr=maxitr+1:-1:1
       cret=retv(itr);
@@ -54,8 +62,7 @@ iter=100;      % iterations
       else
           I = imresize(I, size(Bp) , 'bicubic');%%%%%%%
       end
-      
-%       Bp=imgaussfilt(Bp,1.2);
+   
       
       r = gradient_confidence_full(Bp,window_size);
       
@@ -67,11 +74,6 @@ iter=100;      % iterations
       while i<=5
           % evolution
                     
-%           r= exp(-r.^(0.8));        
-%           structure = structure_adaptive_map( I,lambda_texture*r, 100);          
-%           I_= shock(structure,iter,dt,h,'org');
-%           structure = I_;
-          
           structure= shock(I,iter,dt,h,'org');
                  
           %%%%%%%%%%%compute the gradient of I
@@ -79,9 +81,6 @@ iter=100;      % iterations
           I_x = conv2(structure, [-1,1;0,0], 'valid'); %vertical edges
           I_y = conv2(structure, [-1,0;1,0], 'valid'); % horizontal edges         
           I_mag = sqrt(I_x.^2+I_y.^2);
-          
-%           I_x = I_x.*heaviside_function(I_mag,edge_thresh);
-%           I_y = I_y.*heaviside_function(I_mag,edge_thresh);
           
           [r1,c1]=size(I_x);
           MaskR = heaviside_function(r(1:r1,1:c1), thresholdR);           
@@ -98,16 +97,13 @@ iter=100;      % iterations
               continue;
           end
           
-          
-          ks=estimate_psf(Bx, By, I_x, I_y, 2, size(kernel));
+          kernel=estimate_psf(Bx, By, I_x, I_y, 2, size(kernel));
           
          %% center the kernel
-          ks = adjust_psf_center(ks);
-          ks(ks(:)<0) = 0;
-          ks = ks./sum(ks(:));
-          kernel=ks;         
-          
-          
+          kernel = adjust_psf_center(kernel);
+          kernel(kernel(:)<0) = 0;
+          kernel = kernel./sum(kernel(:));
+                         
           lambda_pixel = 4e-3;
           lambda_grad = 4e-4;
 %           I = deconv_ansio_L1(Bp,kernel,lambda_smooth,100);
@@ -128,6 +124,8 @@ iter=100;      % iterations
           end
           dt = dt/1.1;
           lambda_texture = lambda_texture/1.1;
+
+          
           thresholdR = thresholdR/1.1;
           thresholdS = thresholdS/1.1;
           i=i+1;
@@ -145,61 +143,70 @@ iter=100;      % iterations
 kernel = kernel/sum(kernel(:));
 latent = [];
 
-%% kernel refine
-
-%%%%get epsilon_s
-% threshold for epsilon_s
-[width,height] = size(kernel);
-k = kernel;
-
-% threshD = norm(kernel,inf)/(2*width*it);
-
-for it=1:5
-    
-threshD = norm(k,inf)/(2*width*it);
-
-sorted_k = sort(k(:));
-nonzero_index = find(sorted_k>0);
-first_nonzero_index = nonzero_index(1);
-
-diff_sorted_k = diff(sorted_k);
-all_index = find(diff_sorted_k(first_nonzero_index:end)>threshD);
-
-if isempty(all_index)
-   continue; 
-end
-
-epsilon_s = sorted_k(all_index(1)+first_nonzero_index);
-
-mask_s = heaviside_function(k,epsilon_s);
-mask_s_ = ~mask_s;
-
-s = mask_s .* k;
-s_ = mask_s_ .* k;
-
-% set up options for the kernel estimation
-
-k_prev = k;
-figure,imagesc(k);
-figure,imagesc(s);
-figure,imagesc(s_);
-
-k = psf_refine_irls(Bx, By, I_x, I_y, k, s_, 2, size(kernel));
-k = adjust_psf_center(k);
-k(k(:)<0) = 0;
-k = k./sum(k(:));
-epsilon_k = norm(k-k_prev)/norm(k_prev)
-
-
-end
-
-kernel = k;
+ %% kernel refine
+% 
+% %%%%get epsilon_s
+% % threshold for epsilon_s
+% [width,height] = size(kernel);
+% k = kernel;
+% 
+% % threshD = norm(kernel,inf)/(2*width*it);
+% 
+% sorted_k = sort(k(:));
+% nonzero_index = find(sorted_k>0);
+% first_nonzero_index = nonzero_index(1);
+% 
+% diff_sorted_k = diff(sorted_k);
+% 
+% for it=1:8
+%     
+% threshD = 7*norm(k,inf)/(2*width*height*it);
+% all_index = find(diff_sorted_k(first_nonzero_index:end)>threshD);
+% 
+% if isempty(all_index)
+%    continue; 
+% end
+% 
+% epsilon_s = sorted_k(all_index(1)+first_nonzero_index);
+% 
+% mask_s = heaviside_function(k,epsilon_s);
+% mask_s_ = ~mask_s;
+% 
+% s = mask_s .* k;
+% s_ = mask_s_ .* k;
+% 
+% % set up options for the kernel estimation
+% if it==1
+%     k_prev = k;
+% else
+%     k_prev = k_out;
+% end
+% 
+% figure,imagesc(s);
+% figure,imagesc(s_);
+% 
+% k_out = psf_refine_irls(Bx, By, I_x, I_y, k_prev, s_, 2, size(kernel));
+% % figure,imagesc(k_out);
+% % k = adjust_psf_center(k);
+% % k(k(:)<0) = 0;
+% % k = k./sum(k(:));
+% epsilon_k = norm(k_out-k_prev)/norm(k_prev)
+% 
+% end
+% 
+% kernel = k_out;
 %% final deblur
 fprintf('image deblurring...\n');
+opts.nb_lambda = 3000;
+opts.nb_alpha = 1.0;
+bhs = floor(size(kernel,1)/2);
 for c= 1:size(ori_B,3)
-    latent(:,:,c) = deconvSps(ori_B(:,:,c),kernel,0.003,100);
+    ypad = padarray(ori_B(:, :, c), [1 1] * bhs, 'replicate', 'both');
+    tmp = fast_deconv_bregman(ypad, kernel, opts.nb_lambda, opts.nb_alpha);
+    latent(:, :, c) = tmp(bhs + 1 : end - bhs, bhs + 1 : end - bhs);
+%     latent(:,:,c) = deconvSps(ori_B(:,:,c),kernel,0.003,100);
     %% using the edge preserveing model
-     %latent(:,:,c) = deconvSps_adaptive_L1(ori_B(:,:,c),kernel,0.003,200,structure);
+%      latent(:,:,c) = deconvSps_adaptive_L1(ori_B(:,:,c),kernel,0.003,200,structure);
 end
 
 

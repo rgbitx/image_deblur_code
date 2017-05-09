@@ -2,8 +2,6 @@ function psf = estimate_psf(blurred_x, blurred_y, latent_x, latent_y, weight, ps
 
   %2013/5/31  %%%%%%%%%%%%%%%%%%%%%%%%%
 
-dx = [-1 1; 0 0];
-dy = [-1 0; 1 0];
     latent_xf = fft2(latent_x);
     latent_yf = fft2(latent_y);
     blurred_xf = fft2(blurred_x);
@@ -19,6 +17,8 @@ dy = [-1 0; 1 0];
     p.lambda = weight;
 
     psf = ones(psf_size) / prod(psf_size);
+%     psf = zeros(psf_size);
+%     psf = k_init;
     psf = conjgrad(psf, b, 20, 1e-5, @compute_Ax, p);
     
     psf(psf < max(psf(:))*0.05) = 0;
