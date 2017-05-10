@@ -96,9 +96,9 @@ iter=100;      % iterations
               thresholdS = thresholdS/1.1;
               continue;
           end
-          
+          tic
           kernel=estimate_psf(Bx, By, I_x, I_y, 2, size(kernel));
-          
+          toc
          %% center the kernel
           kernel = adjust_psf_center(kernel);
           kernel(kernel(:)<0) = 0;
@@ -108,9 +108,9 @@ iter=100;      % iterations
           lambda_grad = 4e-4;
 %           I = deconv_ansio_L1(Bp,kernel,lambda_smooth,100);
 %           I = L0Deblur_whole(Bp, kernel, lambda_pixel, lambda_grad, 2.0);
-
+          tic
           I = L0Restoration(Bp, kernel, lambda_grad, 2.0);
-          
+          toc
           I(I<0) = 0;
           I(I>1) = 1;
           
@@ -200,6 +200,7 @@ fprintf('image deblurring...\n');
 opts.nb_lambda = 3000;
 opts.nb_alpha = 1.0;
 bhs = floor(size(kernel,1)/2);
+tic
 for c= 1:size(ori_B,3)
     ypad = padarray(ori_B(:, :, c), [1 1] * bhs, 'replicate', 'both');
     tmp = fast_deconv_bregman(ypad, kernel, opts.nb_lambda, opts.nb_alpha);
@@ -208,5 +209,6 @@ for c= 1:size(ori_B,3)
     %% using the edge preserveing model
 %      latent(:,:,c) = deconvSps_adaptive_L1(ori_B(:,:,c),kernel,0.003,200,structure);
 end
+toc
 
 

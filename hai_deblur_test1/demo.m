@@ -13,7 +13,7 @@ display = 1;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% example 1
 % filename = 'image/structure.bmp';
-filename = 'image/grass_blur_using_Levin01_04_27.png';
+filename = 'image/test1_blur.png';
 kernel_sizeh = 45; kernel_sizew = 45;
 % kernel_sizeh = 35; kernel_sizew = 35;
 

@@ -31,19 +31,19 @@ opts.min_lambda = opts.min_lambda*lambda_scale;
 
 
 K = kernel_initialize_mul(ksz,size(B,3));
-tic
+
 [K,L,opts] = estimate_kernel_single(B,K,opts); 
-toc
+
 %center the kernel
-% K = adjust_psf_center_mul(K);
-% K = kernel_normalize_mul(K);  
+K = adjust_psf_center_mul(K);
+K = kernel_normalize_mul(K);  
 % set elements below threshold to 0
 if opts.k_threshold > 0
     K = kernel_normalize_mul(K,opts.k_threshold);
 end
 figure(1),subplot(1,2,1),imshow(mat2gray(K(:,:,1))),
 subplot(1,2,2),imshow(mat2gray(K(:,:,2)));
-figure(2),imshow(mat2gray(L)); 
+figure(2),imshow(L); 
 title('Final result');
 %% final deblur
 
