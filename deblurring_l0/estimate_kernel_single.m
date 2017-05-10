@@ -6,13 +6,13 @@ if max(B(:)) > 2
 end
 for iter = 1:opts.xk_iter      
    %% get latent image    
-   tic
+   
    L = L0Restoration_mul(B,K,opts.lambda); 
    
    %% get kernel   
    
    [K,opts] = estimate_psf_gradient_mul(B,L,opts,K);  
-   toc
+   
    fprintf('%d iterations is done\n', iter);
    
 %     if opts.verbose
@@ -29,6 +29,6 @@ for iter = 1:opts.xk_iter
 end%iter
 
 % figure, imshow(K);
-title('kernel')
+% title('kernel')
 
 end

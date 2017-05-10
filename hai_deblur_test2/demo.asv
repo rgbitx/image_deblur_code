@@ -3,21 +3,21 @@ clear;
 close all;
 addpath(genpath('image'));
 %parameter setting
-lambda_kernel = 0.01;% 0.01
-lambda_smooth = 0.005;%
-lambda_texture = 1;
-window_size = 45;
-lambda_kernel_smooth = 1e-5; %(Adjustable, typically 1e-5, 1e-4, 1e-3)
+opt.lambda_kernel = 0.01;% 0.01
+opt.lambda_smooth = 0.005;%
+opt.lambda_texture = 1;
+opt.window_size = 45;
+opt.lambda_kernel_smooth = 1e-5; %(Adjustable, typically 1e-5, 1e-4, 1e-3)
 % if the kernel contains obvious noise, large value may help (e.g., for test1_blur.png (1e-3))
-display = 1;
+opt.display = 1;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% example 1
 % filename = 'image/structure.bmp';
-filename = 'image/image2053R1_new.png';
-kernel_sizeh = 45; kernel_sizew = 45;
+filename = 'image/test1_blur.png';
+opt.kernel_sizeh = 45; kernel_sizew = 45;
 % kernel_sizeh = 35; kernel_sizew = 35;
 
-lambda_kernel_smooth = 1e-5;
+opt.lambda_kernel_smooth = 1e-5;
 % %% example 2
 % filename = 'image\grass_blur_using_Levin01_04_27.png';
 % kernel_sizeh = 27; kernel_sizew = 27;

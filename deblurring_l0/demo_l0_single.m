@@ -3,7 +3,7 @@ addpath('cho_code');
 %% get input
 %img_name_set = {'stone1_crop.png', 'stone2_crop.png'};
 %img_name_set = {'book1.png', 'book3.png'};%,'book3.png'};
-img_name_set = {'stone1.png', 'stone2.png'};
+% img_name_set = {'stone1.png', 'stone2.png'};
 img_name_set = {'flower1.bmp', 'flower2.bmp'};% image name
 % img_name_set = {'62_1_blurred.png','62_2_blurred.png'};
 [B_org,B] = preparedata(img_name_set);
