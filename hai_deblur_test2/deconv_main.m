@@ -31,8 +31,14 @@ k2 = opt.kernel_sizew;
 kernel = zeros(k1,k2);
 maxitr=max(floor(log(5/min(k1,k2))/log(ret)),0);
 
-thresholdR = 0.5;
-thresholdS = 2*thresholdR;
+% get proper threshold values
+maxCnt = 200;
+threshstep = 1.1;
+thresholdR = 0.01;
+thresholdS = thresholdR/15;
+
+thresh_percent = 0.95;
+[thresholdR,thresholdS]=determin_thresh_edge(B,opt,thresh_percent);
 
 % B=imgaussfilt(B,1.6);
 
@@ -46,19 +52,13 @@ k2list=k2list+(mod(k2list,2)==0);
 cret=retv(end);
 kernel=resizeKer(kernel,cret,k1list(end),k2list(end));
 
-% I_X = conv2(B, [-1,1;0,0], 'valid'); %vertical edges
-% I_Y = conv2(B, [-1,0;1,0], 'valid'); %
-% I_mag = sqrt(I_X.^2+I_Y.^2);
-% [k1,k2]= size(kernel);
-% edge_thresh = determine_truck(I_X, I_Y, I_mag,k1,k2);
-% clear I_X I_Y I_mag;
+
 % parameters
 dt=1; h=1;
 iter=100;      % iterations
-% get proper thresholdD and thresholdS
-maxCnt = 200;
-  
-  for itr=maxitr+1:-1:1
+
+
+for itr=maxitr+1:-1:1
               
       cret=retv(itr);
       Bp=downSmpImC(B,cret);
@@ -67,7 +67,7 @@ maxCnt = 200;
       else
           I = imresize(I, size(Bp) , 'bicubic');%%%%%%%
       end
-   
+      
       r = gradient_confidence_full(Bp,opt.window_size);
       
       Bx = conv2(Bp, [-1,1;0,0], 'valid'); %vertical edges
@@ -75,18 +75,17 @@ maxCnt = 200;
             
       %For each level
       i=1;
-      while i<=5
+      while i<=3
           % evolution
                                     
-          structure= shock(I,iter,dt,h,'org');
-                 
-          %%%%%%%%%%%compute the gradient of I
+%           structure= shock(I,iter,dt,h,'org');
+          structure= I;
           
+          %%%%%%%%%%%compute the gradient of I          
           I_x0 = conv2(structure, [-1,1;0,0], 'valid'); %vertical edges
           I_y0 = conv2(structure, [-1,0;1,0], 'valid'); % horizontal edges         
           I_mag = sqrt(I_x0.^2+I_y0.^2);
-          
-          
+                    
           [r1,c1]=size(I_x0);
           MaskR = heaviside_function(r(1:r1,1:c1), thresholdR);           
           I_x = I_x0.*heaviside_function(MaskR.*I_mag,thresholdS);
@@ -96,32 +95,29 @@ maxCnt = 200;
           I_x(1:2,:) =0;I_x(end-1:end,:) = 0;I_x(:,1:2) =0;I_x(:,end-1:end) = 0;
           I_y(1:2,:) =0;I_y(end-1:end,:) = 0;I_y(:,1:2) =0;I_y(:,end-1:end) = 0;
           
-          % make I_x and I_y are nonzero
+         %% To avoid I_x I_y zero error
           cnt = 1;
-          while cnt < maxCnt && ((any(I_x(:))==0) || (any(I_y(:))==0))
-              
-              thresholdR = thresholdR/1.1;
-              thresholdS = thresholdS/1.1;
+          while cnt<maxCnt && (any(I_x(:))==0 || any(I_y(:))==0)
+              thresholdR = thresholdR/threshstep;
+              thresholdS = thresholdS/threshstep;
 
               MaskR = heaviside_function(r(1:r1,1:c1), thresholdR);           
               I_x = I_x0.*heaviside_function(MaskR.*I_mag,thresholdS);
               I_y = I_y0.*heaviside_function(MaskR.*I_mag,thresholdS);
-
+              
               cnt = cnt + 1;
           end
-          if cnt==maxCnt
-              break;
+          if cnt >= maxCnt
+                break;
           end
-          
-                  
+                            
           kernel=estimate_psf(Bx, By, I_x, I_y, 20, size(kernel));
           
          %% center the kernel
           kernel = adjust_psf_center(kernel);
           kernel(kernel(:)<0) = 0;
           kernel = kernel./sum(kernel(:));
-          
-          
+                   
           I = L0Restoration(Bp, kernel, lambda_grad);
           
           I(I<0) = 0;
@@ -138,10 +134,11 @@ maxCnt = 200;
           dt = dt/1.1;
 %           lambda_grad = max(lambda_grad/1.1,4e-4);
          
-          thresholdR = thresholdR/1.1;
-          thresholdS = thresholdS/1.1;
+%           thresholdR = thresholdR/threshstep;
+%           thresholdS = thresholdS/threshstep;
           i=i+1;
       end
+      
       
       if (itr>1)
           kernel=resizeKer(kernel,1/ret,k1list(itr-1),k2list(itr-1));
@@ -150,9 +147,9 @@ maxCnt = 200;
           kernel = kernel./sum(kernel(:));
       end
       
-  end
-thresholdR
-thresholdS
+      
+end
+
 kernel = kernel/sum(kernel(:));
 latent = [];
 

@@ -12,9 +12,14 @@ opt.lambda_kernel_smooth = 1e-5; %(Adjustable, typically 1e-5, 1e-4, 1e-3)
 opt.display = 1;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% example 1
+% filename = 'image/details_blur2_45.png';
+% filename = 'image/image2053R1_new.bmp';
+filename = 'image/wall.png';
+% filename = 'test1_blur.png';
+% filename = 'image/roma.png';
+% filename = 'image/image9.png';
 % filename = 'image/structure.bmp';
-filename = 'image/test1_blur.png';
-opt.kernel_sizeh = 45; kernel_sizew = 45;
+% opt.kernel_sizeh = 45; opt.kernel_sizew = 45;
 % kernel_sizeh = 35; kernel_sizew = 35;
 
 opt.lambda_kernel_smooth = 1e-5;
@@ -63,16 +68,22 @@ else
     y_gray = double(y)/255;
 end
 ori_B =  im2double(y);
-[kernel, inter_latent] = deconv_main(y_gray, ori_B, lambda_kernel, lambda_smooth,...
-    lambda_texture, window_size, kernel_sizeh, kernel_sizew, ...
-    lambda_kernel_smooth, display);
-figure; imshow(inter_latent)
-Imgoutname = [filename(1:end-4) '_out.png'];
-Kerneloutname = [filename(1:end-4) '_kernel.png'];
-kw= kernel-min(kernel(:));
-kw= kw/max(kw(:));
-imwrite(kw,Kerneloutname);
-imwrite(inter_latent,Imgoutname);
+% [kernel, inter_latent] = deconv_main(y_gray, ori_B, lambda_kernel, lambda_smooth,...
+%     lambda_texture, window_size, kernel_sizeh, kernel_sizew, ...
+%     lambda_kernel_smooth, display);
+tic
+[kernel, inter_latent] = deconv_main(y_gray, ori_B, opt);
+toc
+figure, imagesc(kernel)
+figure, imshow(inter_latent)
+
+
+% Imgoutname = [filename(1:end-4) '_out.png'];
+% Kerneloutname = [filename(1:end-4) '_kernel.png'];
+% kw= kernel-min(kernel(:));
+% kw= kw/max(kw(:));
+% imwrite(kw,Kerneloutname);
+% imwrite(inter_latent,Imgoutname);
 
     
     

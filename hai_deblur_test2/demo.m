@@ -13,9 +13,14 @@ opt.display = 1;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% example 1
 % filename = 'image/details_blur2_45.png';
-% filename = 'image/lyndsey.png';
-filename = 'image/structure.bmp';
-opt.kernel_sizeh = 45; opt.kernel_sizew = 45;
+% filename = 'image/image2053R1_new.bmp';
+% filename = 'image/wall.png';
+% filename = 'test1_blur.png';
+filename = 'image/roma.png';
+% filename = 'image/image10.png';
+% filename = 'image/structure.bmp';
+
+opt.kernel_sizeh = 35; opt.kernel_sizew = 35;
 % kernel_sizeh = 35; kernel_sizew = 35;
 
 opt.lambda_kernel_smooth = 1e-5;
