@@ -32,7 +32,7 @@ kernel = zeros(k1,k2);
 maxitr=max(floor(log(5/min(k1,k2))/log(ret)),0);
 
 thresholdR = 0.5;
-thresholdS = 1;
+thresholdS = 2*thresholdR;
 
 % B=imgaussfilt(B,1.6);
 
@@ -55,7 +55,8 @@ kernel=resizeKer(kernel,cret,k1list(end),k2list(end));
 % parameters
 dt=1; h=1;
 iter=100;      % iterations
-
+% get proper thresholdD and thresholdS
+maxCnt = 200;
   
   for itr=maxitr+1:-1:1
               
@@ -81,25 +82,37 @@ iter=100;      % iterations
                  
           %%%%%%%%%%%compute the gradient of I
           
-          I_x = conv2(structure, [-1,1;0,0], 'valid'); %vertical edges
-          I_y = conv2(structure, [-1,0;1,0], 'valid'); % horizontal edges         
-          I_mag = sqrt(I_x.^2+I_y.^2);
+          I_x0 = conv2(structure, [-1,1;0,0], 'valid'); %vertical edges
+          I_y0 = conv2(structure, [-1,0;1,0], 'valid'); % horizontal edges         
+          I_mag = sqrt(I_x0.^2+I_y0.^2);
           
           
-          [r1,c1]=size(I_x);
+          [r1,c1]=size(I_x0);
           MaskR = heaviside_function(r(1:r1,1:c1), thresholdR);           
-          I_x = I_x.*heaviside_function(MaskR.*I_mag,thresholdS);
-          I_y = I_y.*heaviside_function(MaskR.*I_mag,thresholdS);
+          I_x = I_x0.*heaviside_function(MaskR.*I_mag,thresholdS);
+          I_y = I_y0.*heaviside_function(MaskR.*I_mag,thresholdS);
           
           %exclude the edge
           I_x(1:2,:) =0;I_x(end-1:end,:) = 0;I_x(:,1:2) =0;I_x(:,end-1:end) = 0;
           I_y(1:2,:) =0;I_y(end-1:end,:) = 0;I_y(:,1:2) =0;I_y(:,end-1:end) = 0;
-                       
-          if (any(I_x(:))==0) || (any(I_y(:))==0)
+          
+          % make I_x and I_y are nonzero
+          cnt = 1;
+          while cnt < maxCnt && ((any(I_x(:))==0) || (any(I_y(:))==0))
+              
               thresholdR = thresholdR/1.1;
               thresholdS = thresholdS/1.1;
-              continue;
+
+              MaskR = heaviside_function(r(1:r1,1:c1), thresholdR);           
+              I_x = I_x0.*heaviside_function(MaskR.*I_mag,thresholdS);
+              I_y = I_y0.*heaviside_function(MaskR.*I_mag,thresholdS);
+
+              cnt = cnt + 1;
           end
+          if cnt==maxCnt
+              break;
+          end
+          
                   
           kernel=estimate_psf(Bx, By, I_x, I_y, 20, size(kernel));
           
@@ -138,8 +151,8 @@ iter=100;      % iterations
       end
       
   end
-
- 
+thresholdR
+thresholdS
 kernel = kernel/sum(kernel(:));
 latent = [];
 

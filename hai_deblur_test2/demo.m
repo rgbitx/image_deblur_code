@@ -13,7 +13,8 @@ opt.display = 1;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% example 1
 % filename = 'image/details_blur2_45.png';
-filename = 'image/roma.png';
+% filename = 'image/lyndsey.png';
+filename = 'image/structure.bmp';
 opt.kernel_sizeh = 45; opt.kernel_sizew = 45;
 % kernel_sizeh = 35; kernel_sizew = 35;
 
