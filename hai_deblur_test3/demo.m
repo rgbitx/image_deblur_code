@@ -82,7 +82,7 @@ y_gray_P = imresize(y_gray,0.5);
 ori_B =  im2double(y);
 
 tic
-[kernel, inter_latent] = deconv_main(y_gray_P, ori_B, opt);
+[kernel, inter_latent] = deconv_main(y_gray, ori_B, opt);
 toc
 figure, imagesc(kernel)
 figure, imshow(inter_latent)

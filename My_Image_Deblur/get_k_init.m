@@ -28,9 +28,9 @@ for i=1:length(xq)
 end
 k = k./sum(k(:));
 
-k_init = k;
+k_init = rot90(k,1);
 
-figure,imagesc(k)
-figure,imagesc(rot90(k,2))
+% figure,imagesc(k)
+% figure,imagesc(rot90(k,2))
 
 end

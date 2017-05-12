@@ -17,7 +17,7 @@ opt.display = 1;
 % filename = 'image/wall.png';
 % filename = 'test1_blur.png';
 filename = 'image/roma.png';
-% filename = 'image/image10.png';
+% filename = 'image/image9.png';
 % filename = 'image/structure.bmp';
 
 opt.kernel_sizeh = 35; opt.kernel_sizew = 35;

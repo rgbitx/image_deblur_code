@@ -60,7 +60,7 @@ k_init = get_k_init(fn);
 dt=1; h=1;
 iter=100;      % iterations
 
-last = 3;
+last = 2;
 for itr=last:-1:1
     
       kernel=resizeKer(k_init,1/ret,k1list(itr),k2list(itr));
@@ -81,7 +81,7 @@ for itr=last:-1:1
             
       %For each level
       i=1;
-      while i<=3
+      while i<=5
           % evolution
           
           I = L0Restoration(Bp, kernel, lambda_grad);                   
@@ -128,7 +128,7 @@ for itr=last:-1:1
           kernel = adjust_psf_center(kernel);
           kernel(kernel(:)<0) = 0;
           kernel = kernel./sum(kernel(:));
-          
+                   
                                          
           fprintf('%d iterations of pyramid %d is done\n', i, itr);
           %% for test
