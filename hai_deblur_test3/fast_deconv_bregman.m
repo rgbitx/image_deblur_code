@@ -63,7 +63,7 @@ pcost(totiter) = sum((abs(gx(:)) .^ alpha));
 pcost(totiter) = pcost(totiter) + sum((abs(gy(:)) .^ alpha));
 
 for outiter = 1:outiter_max
-%   fprintf('Outer iteration %d\n', outiter);
+  fprintf('Outer iteration %d\n', outiter);
   initer = 0;
 
   for initer = 1:initer_max

@@ -13,6 +13,8 @@ f = 4.26;
 points = f*[euler(:,2) euler(:,3)];
 points(:,1) = points(:,1) - points(1,1);
 points(:,2) = points(:,2) - points(1,2);
+point3 = round(points);
+
 points2 = 10*points;
 pointsX = points2(:,1);
 pointsY = points2(:,2);
@@ -37,7 +39,8 @@ vq0 = interp1(x,v,xq);
 vq = round(interp1(x,v,xq));
 
 % move to the center
-ksize = 100;
+ksize = floor(max(range(xq),range(vq))*1.2);
+
 % ksize = length(xq);
 offset = [round(mean(xq)-ksize/2),round(mean(vq)-ksize/2)];
 xq = xq - offset(1);
@@ -57,17 +60,18 @@ if flag == 2
    k = k./sum(k(:));
 end
 
+
 k1 = imresize(k,[25,25]);
 
 figure;plot(xq,vq,'o')
 figure;imagesc(k);
 figure;imagesc(k1);
 
-PSF = k1;
-estimated_nsr = 0;
-blurred = imread('image9.png');
-wnr = deconvwnr(blurred, PSF, estimated_nsr);
-figure; imshow(wnr);
+% PSF = k1;
+% estimated_nsr = 0;
+% blurred = imread('image9.png');
+% wnr = deconvwnr(blurred, PSF, estimated_nsr);
+% figure; imshow(wnr);
 
 % kernelSize = 25;
 % points2 = points2*24/range(points2(:));

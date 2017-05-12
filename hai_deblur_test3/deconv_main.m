@@ -30,6 +30,7 @@ k1 = opt.kernel_sizeh;
 k2 = opt.kernel_sizew;
 kernel = zeros(k1,k2);
 maxitr=max(floor(log(5/min(k1,k2))/log(ret)),0);
+% maxitr=5;
 
 % get proper threshold values
 maxCnt = 200;
@@ -37,10 +38,10 @@ threshstep = 1.1;
 thresholdR = 0.01;
 thresholdS = thresholdR/15;
 
-thresh_percent = 0.95;
+thresh_percent = 0.90;
 [thresholdR,thresholdS]=determin_thresh_edge(B,opt,thresh_percent);
 
-% B=imgaussfilt(B,1.6);
+% B=imgaussfilt(B,0.5);
 
 retv=ret.^[0:maxitr];
 
@@ -50,19 +51,23 @@ k2list=ceil(k2*retv);
 k2list=k2list+(mod(k2list,2)==0);
 
 cret=retv(end);
-kernel=resizeKer(kernel,cret,k1list(end),k2list(end));
+% kernel=resizeKer(kernel,cret,k1list(end),k2list(end));
 
+fn = 'sensorData.txt';
+k_init = get_k_init(fn);
 
 % parameters
 dt=1; h=1;
 iter=100;      % iterations
 
-
-for itr=maxitr+1:-1:1
-              
+last = 1;
+for itr=last:-1:1
+    
+      kernel=resizeKer(kernel,1/ret,k1list(itr),k2list(itr));
+             
       cret=retv(itr);
       Bp=downSmpImC(B,cret);
-      if itr == maxitr+1
+      if itr == last
           I = Bp;
       else
           I = imresize(I, size(Bp) , 'bicubic');%%%%%%%
@@ -110,7 +115,8 @@ for itr=maxitr+1:-1:1
           if cnt >= maxCnt
                 break;
           end
-                            
+         
+          
           kernel=estimate_psf(Bx, By, I_x, I_y, 20, size(kernel));
           
          %% center the kernel
@@ -118,8 +124,7 @@ for itr=maxitr+1:-1:1
           kernel(kernel(:)<0) = 0;
           kernel = kernel./sum(kernel(:));
                    
-          I = L0Restoration(Bp, kernel, lambda_grad);
-          
+          I = L0Restoration(Bp, kernel, lambda_grad);                   
           I(I<0) = 0;
           I(I>1) = 1;
                                  
@@ -131,23 +136,12 @@ for itr=maxitr+1:-1:1
               subplot(223); imshow(I,[]); title('deblurring image');
               subplot(224); imshow(fliplr(flipud(kernel)),[]); title('kernel');
           end
-          dt = dt/1.1;
-%           lambda_grad = max(lambda_grad/1.1,4e-4);
-         
+%           dt = dt/1.1;
+%           lambda_grad = max(lambda_grad/1.1);  
 %           thresholdR = thresholdR/threshstep;
 %           thresholdS = thresholdS/threshstep;
           i=i+1;
-      end
-      
-      
-      if (itr>1)
-          kernel=resizeKer(kernel,1/ret,k1list(itr-1),k2list(itr-1));
-          kernel = adjust_psf_center(kernel);
-          kernel(kernel<0) = 0;
-          kernel = kernel./sum(kernel(:));
-      end
-      
-      
+      end           
 end
 
 kernel = kernel/sum(kernel(:));

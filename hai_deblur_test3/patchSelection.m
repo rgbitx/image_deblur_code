@@ -1,9 +1,4 @@
-function [pxmin,pxmax,pymin,pymax] = patchSelection(img, ksize, times)
-
-%%% img -- image file name
-%%% ksize -- the size of the kernel
-%%% psize -- the size of output patch
-%%% psize = ksize * times
+function [pxmin,pxmax,pymin,pymax] = patchSelection(img, ksize,times)
 
 I = imread(img);
 Igray = rgb2gray(I);

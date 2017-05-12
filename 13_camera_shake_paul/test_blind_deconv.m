@@ -1,5 +1,5 @@
 
-opts.kernel_size = 25;
+opts.kernel_size = 45;
 
 % set kernel_est_win to be the window used for estimating the kEst - if
 % this option is empty, whole image will be used
@@ -34,7 +34,10 @@ switch dataSource
       % and dirty" approach with sparser initialization, less burn-in,
       % and a faster sparsity relaxation schedule.
 %       fn = 'pietro.tif';
-      fn = 'image10_large.png';
+%       fn = 'roma.png';
+%       fn = 'postcard.png';
+%       fn = 'test1_blur.png';
+      fn = 'wall.png';
       %fn = 'mukta.jpg';
       %fn = 'fishes.jpg';
       %fn = 'lyndsey.tif';
@@ -56,8 +59,9 @@ switch dataSource
       tic;
       %set the patch 
       ksize = opts.kernel_size;
-      [pxmin,pxmax,pymin,pymax] = patchSelection(fn,ksize);
-      opts.kernel_est_win = [pxmin,pymin,pxmax,pymax];
+      times = 20;
+%       [pxmin,pxmax,pymin,pymax] = patchSelection(fn,ksize,times);
+%       opts.kernel_est_win = [pxmin,pymin,pxmax,pymax];
       
       [kEst,yorig,deblur] = ms_blind_deconv(fn, opts);
       etime = toc
