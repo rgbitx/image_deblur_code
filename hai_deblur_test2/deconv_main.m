@@ -34,10 +34,10 @@ maxitr=max(floor(log(5/min(k1,k2))/log(ret)),0);
 % get proper threshold values
 maxCnt = 200;
 threshstep = 1.1;
-thresholdR = 0.01;
+thresholdR = 0.1;
 thresholdS = thresholdR/15;
 
-thresh_percent = 0.95;
+thresh_percent = 0.90;
 [thresholdR,thresholdS]=determin_thresh_edge(B,opt,thresh_percent);
 
 % B=imgaussfilt(B,1.6);
@@ -130,9 +130,10 @@ for itr=maxitr+1:-1:1
               subplot(222);imshow(structure,[]);title('structure')
               subplot(223); imshow(I,[]); title('deblurring image');
               subplot(224); imshow(fliplr(flipud(kernel)),[]); title('kernel');
+              pause(0.01);
           end
-          dt = dt/1.1;
-%           lambda_grad = max(lambda_grad/1.1,4e-4);
+%           dt = dt/1.1;
+%           lambda_grad = max(lambda_grad/1.1,1e-5);
          
 %           thresholdR = thresholdR/threshstep;
 %           thresholdS = thresholdS/threshstep;

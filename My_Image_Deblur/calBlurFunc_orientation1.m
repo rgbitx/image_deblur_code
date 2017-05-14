@@ -28,9 +28,11 @@ vq = vq - offset(2);
 k = zeros(ksize);
 
 for i=1:length(xq)
-    k(xq(i),vq(i)) = 1;
+    k(vq(i),xq(i)) = 1;
 end
 k = k./sum(k(:));
 
 figure,imagesc(k)
+figure,imagesc(rot90(k,1))
 figure,imagesc(rot90(k,2))
+figure,imagesc(rot90(k,-1))

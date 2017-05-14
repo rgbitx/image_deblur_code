@@ -20,6 +20,8 @@ opt.display = 1;
 filename = 'image/image9.png';
 % filename = 'image/grass_blur_using_Levin01_04_27.png';
 % filename = 'image/structure.bmp';
+% filename = 'test1_blur.png';
+% filename = 'lyndsey.png';
 
 opt.kernel_sizeh = 35; opt.kernel_sizew = 35;
 opt.kernel_size = 35;
