@@ -1,4 +1,4 @@
-function sI=downSmpImC(I,ret);
+function sI=downSmpImC(I,ret)
 % refer to Levin's code
 if (ret==1)
     sI=I;

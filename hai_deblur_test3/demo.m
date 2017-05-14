@@ -67,7 +67,7 @@ opt.lambda_kernel_smooth = 1e-5;
 ksize = opt.kernel_sizeh;
 times = 8;
 patch_size = ksize * times;
-[pxmin,pxmax,pymin,pymax] = patchSelection(filename,ksize,times);
+% [pxmin,pxmax,pymin,pymax] = patchSelection(filename,ksize,times);
 
 y = imread(filename);
 if size(y,3)==3

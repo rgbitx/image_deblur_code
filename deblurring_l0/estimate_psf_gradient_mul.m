@@ -13,13 +13,11 @@ Ly = conv2(L,dy,'valid');
 FLx = fft2(Lx);
 FLy = fft2(Ly);
 psf = zeros(psf_size);
-for ii = 1:size(B,3)
-    Bx = conv2(B(:,:,ii),dx,'valid');
-    By = conv2(B(:,:,ii),dy,'valid');
-    FBx = fft2(Bx);
-    FBy = fft2(By);    
-    psf(:,:,ii) = estimate_psf(FBx,FBy,FLx,FLy,weight,psf_size(1:2));
-end%ii
+Bx = conv2(B(:,:),dx,'valid');
+By = conv2(B(:,:),dy,'valid');
+FBx = fft2(Bx);
+FBy = fft2(By);    
+psf(:,:) = estimate_psf(FBx,FBy,FLx,FLy,weight,psf_size(1:2));
 
 end%function 
 
