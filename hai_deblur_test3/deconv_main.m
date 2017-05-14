@@ -60,11 +60,12 @@ k_init = get_k_init(fn);
 dt=1; h=1;
 iter=100;      % iterations
 
-last = 3;
+last = 2;
 for itr=last:-1:1
     
-      kernel=resizeKer(k_init,1/ret,k1list(itr),k2list(itr));
+%       kernel=resizeKer(k_init,1/ret,k1list(itr),k2list(itr));
 %       kernel = k_init;
+      kernel = ones(k1list(itr),k2list(itr));
              
       cret=retv(itr);
       Bp=downSmpImC(B,cret);

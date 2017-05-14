@@ -1,4 +1,5 @@
 function S = L0Restoration_mul(Im, kernel, lambda)
+
 %%
 % Image restoration with L0 prior
 % The objective function: 
