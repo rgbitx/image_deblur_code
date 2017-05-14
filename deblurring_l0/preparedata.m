@@ -1,20 +1,11 @@
-function [B_org,B] = preparedata(img_name_set)
-n = length(img_name_set);
-B_org = cell(n,1);
-for ii = 1:n
-    B_org{ii} = imread(img_name_set{ii});
-end
-[rr,cc,dd] = size(B_org{1});
-B = zeros(rr,cc,n,'uint8');
-if dd > 1
-    for ii = 1:n
-        B(:,:,ii) = rgb2gray(B_org{ii});
+function [B_org,B] = preparedata(img_name)
+
+    B_org = imread(img_name);
+    
+    if size(B_org,3)==3   
+        B = rgb2gray(B_org);
+        B = double(B)/255;
+    else
+        B = double(B_org)/255;        
     end
-else
-    for ii = 1:n
-        B(:,:,ii) = B_org{ii};
-    end    
-end
-
-
 end

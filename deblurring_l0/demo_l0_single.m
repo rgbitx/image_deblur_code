@@ -1,12 +1,15 @@
 clear,clc,close all hidden;
-addpath('cho_code');
+% addpath('cho_code');
 %% get input
 %img_name_set = {'stone1_crop.png', 'stone2_crop.png'};
 %img_name_set = {'book1.png', 'book3.png'};%,'book3.png'};
 % img_name_set = {'stone1.png', 'stone2.png'};
 img_name_set = {'flower1.bmp', 'flower2.bmp'};% image name
 % img_name_set = {'62_1_blurred.png','62_2_blurred.png'};
-[B_org,B] = preparedata(img_name_set);
+
+img_name = 'flower1.bmp';
+
+[B_org,B] = preparedata(img_name);
 %B = get_levin_data();
 ksz = [25,25];% kernel size for each image
 %% estimate kernel
@@ -30,7 +33,7 @@ opts.lambda = opts.lambda*lambda_scale;
 opts.min_lambda = opts.min_lambda*lambda_scale;
 
 
-K = kernel_initialize_mul(ksz,size(B,3));
+K = kernel_initialize_mul(ksz);
 
 [K,L,opts] = estimate_kernel_single(B,K,opts); 
 
@@ -41,8 +44,7 @@ K = kernel_normalize_mul(K);
 if opts.k_threshold > 0
     K = kernel_normalize_mul(K,opts.k_threshold);
 end
-figure(1),subplot(1,2,1),imshow(mat2gray(K(:,:,1))),
-subplot(1,2,2),imshow(mat2gray(K(:,:,2)));
+figure(1),imshow(K);
 figure(2),imshow(L); 
 title('Final result');
 %% final deblur
