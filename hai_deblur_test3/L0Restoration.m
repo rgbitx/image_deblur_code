@@ -67,4 +67,7 @@ while beta < betamax
     beta = beta*kappa;
 end
 S = S(1:H, 1:W, :);
+
+% S = smoothing_kernel(S);
+
 end

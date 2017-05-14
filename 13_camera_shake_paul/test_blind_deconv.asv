@@ -38,8 +38,7 @@ switch dataSource
 %       fn = 'postcard.png';
 %       fn = 'test1_blur.png';
 %       fn = 'roma.png';
-%       fn = 'structure.bmp';
-      fn = 'image10_large.png';
+      fn = 'structure.bmp';
       %fn = 'mukta.jpg';
       %fn = 'fishes.jpg';
       %fn = 'lyndsey.tif';
@@ -61,7 +60,7 @@ switch dataSource
       tic;
       %set the patch 
       ksize = 25;
-      times = 16;
+      times = 20;
       [pxmin,pxmax,pymin,pymax] = patchSelection(fn,ksize,times);
       opts.kernel_est_win = [pxmin,pymin,pxmax,pymax];
       

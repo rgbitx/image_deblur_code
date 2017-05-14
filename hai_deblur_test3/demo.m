@@ -17,14 +17,15 @@ opt.display = 1;
 % filename = 'image/wall.png';
 % filename = 'test1_blur.png';
 % filename = 'image/roma.png';
-filename = 'image/image9.png';
+% filename = 'image/image9.png';
 % filename = 'image/grass_blur_using_Levin01_04_27.png';
 % filename = 'image/structure.bmp';
 % filename = 'test1_blur.png';
 % filename = 'lyndsey.png';
+filename = 'image10_large.png';
 
 opt.kernel_sizeh = 35; opt.kernel_sizew = 35;
-opt.kernel_size = 35;
+
 % kernel_sizeh = 35; kernel_sizew = 35;
 
 opt.lambda_kernel_smooth = 1e-5;
@@ -66,10 +67,10 @@ opt.lambda_kernel_smooth = 1e-5;
 % kernel_sizeh = 45; kernel_sizew = 45;
 %============================
 
-ksize = opt.kernel_sizeh;
-times = 8;
-patch_size = ksize * times;
-% [pxmin,pxmax,pymin,pymax] = patchSelection(filename,ksize,times);
+opt.kernel_size = 25;
+times = 16;
+% patch_size = ksize * times;
+[pxmin,pxmax,pymin,pymax] = patchSelection(filename,opt.kernel_size,times);
 
 y = imread(filename);
 if size(y,3)==3
@@ -78,13 +79,13 @@ if size(y,3)==3
 else
     y_gray = double(y)/255;
 end
-% y_gray_P = y_gray(y(pxmin:pxmax,pymin:pymax));
+y_gray_P = y_gray(pxmin:pxmax,pymin:pymax);
 
-y_gray_P = imresize(y_gray,0.5);
+% y_gray_P = imresize(y_gray,0.5);
 ori_B =  im2double(y);
 
 tic
-[kernel, inter_latent] = deconv_main(y_gray, ori_B, opt);
+[kernel, inter_latent] = deconv_main(y_gray_P, ori_B, opt);
 toc
 figure, imagesc(kernel)
 figure, imshow(inter_latent)
