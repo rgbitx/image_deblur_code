@@ -18,11 +18,11 @@ opt.display = 1;
 % filename = 'test1_blur.png';
 % filename = 'image/roma.png';
 % filename = 'image/image9.png';
-% filename = 'image/grass_blur_using_Levin01_04_27.png';
+filename = 'image/grass_blur_using_Levin01_04_27.png';
 % filename = 'image/structure.bmp';
 % filename = 'test1_blur.png';
 % filename = 'lyndsey.png';
-filename = 'image10_large.png';
+% filename = 'image10_large.png';
 
 opt.kernel_sizeh = 35; opt.kernel_sizew = 35;
 
