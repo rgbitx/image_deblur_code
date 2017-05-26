@@ -39,8 +39,8 @@ switch dataSource
 %       fn = 'test1_blur.png';
 %       fn = 'roma.png';
 %       fn = 'structure.bmp';
-%       fn = 'image10_large.png';
-      fn = 'grass_blur_using_Levin01_04_27.png';
+      fn = 'image10_large.png';
+%       fn = 'grass_blur_using_Levin01_04_27.png';
       %fn = 'mukta.jpg';
       %fn = 'fishes.jpg';
       %fn = 'lyndsey.tif';

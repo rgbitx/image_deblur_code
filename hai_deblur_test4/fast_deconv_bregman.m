@@ -83,7 +83,7 @@ for outiter = 1:outiter_max
     else
       wx = solve_image_bregman(gx + bx, beta, alpha); 
       wy = solve_image_bregman(gy + by, beta, alpha);
-    end;
+    end
     
     bx = bx - wx + gx;
     by = by - wy + gy;
@@ -107,8 +107,8 @@ for outiter = 1:outiter_max
     lcost(totiter) = (lambda / 2) * norm(gk(:) - f(:))^2;
     pcost(totiter) = sum((abs(gx(:)) .^ alpha));
     pcost(totiter) = pcost(totiter) + sum((abs(gy(:)) .^ alpha));
-  end; 
-end; 
+  end
+end
 
 function [Ktf, KtK, DtD, Fdx, Fdy] = computeConstants(f, k, dx, dy)
 

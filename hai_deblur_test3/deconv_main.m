@@ -24,7 +24,7 @@ function [kernel, latent] = deconv_main(B, ori_B, opt)
 ret = sqrt(0.5);
 
 lambda_grad = 4e-4;
-
+lamda_kernel = 5;
 %%initialize the kernel 
 k1 = opt.kernel_sizeh;
 k2 = opt.kernel_sizew;
@@ -64,11 +64,6 @@ last = maxitr+1;
 first = 1;
 for itr=last:-1:first
       
-      k0 = resizeKer(k_init,1/ret,k1list(itr),k2list(itr));
-      k0 = adjust_psf_center(k0);
-      k0(k0(:)<0) = 0;
-      k0 = k0./sum(k0(:));
-      
       cret=retv(itr);
       Bp=downSmpImC(B,cret);
       if itr == last
@@ -81,10 +76,16 @@ for itr=last:-1:first
       
       Bx = conv2(Bp, [-1,1;0,0], 'valid'); %vertical edges
       By = conv2(Bp, [-1,0;1,0], 'valid'); 
-            
+      
+      if itr>=3
+        i_max = 3;
+      else
+        i_max = 2;
+      end
+      
       %For each level
       i=1;
-      while i<=3
+      while i<=i_max
           % evolution
                                  
           structure= I;
@@ -120,20 +121,17 @@ for itr=last:-1:first
           end
          
           
-          kernel=estimate_psf(Bx, By, I_x, I_y, 20, size(kernel),k0);
-          
-%           if itr==last
-%             kernel=resizeKer(k_init,1/ret,k1list(itr),k2list(itr));
-%           end
-          
+          kernel=estimate_psf(Bx, By, I_x, I_y, lamda_kernel, size(kernel));             
          %% center the kernel
           kernel = adjust_psf_center(kernel);
           kernel(kernel(:)<0) = 0;
           kernel = kernel./sum(kernel(:));
-                             
+          
+          
           I = L0Restoration(Bp, kernel, lambda_grad);                   
           I(I<0) = 0;
           I(I>1) = 1;
+          
                                          
           fprintf('%d iterations of pyramid %d is done\n', i, itr);
           %% for test
@@ -143,9 +141,11 @@ for itr=last:-1:first
               subplot(223); imshow(I,[]); title('deblurring image');
               subplot(224); imshow(rot90(kernel,2),[]); title('kernel');
 %               figure(2), imagesc(k0);
-              pause(0.01);
+              pause(0.001);
           end
-
+          
+          lamda_kernel = lamda_kernel * 1.1;
+          
           i=i+1;
       end
       
@@ -167,14 +167,20 @@ opts.nb_lambda = 3000;
 opts.nb_alpha = 1.0;
 bhs = floor(size(kernel,1)/2);
 
+kernel(kernel==0) = 1e-6;
+
 for c= 1:size(ori_B,3)
     ypad = padarray(ori_B(:, :, c), [1 1] * bhs, 'replicate', 'both');
+    for a = 1:1
+        ypad = edgetaper(ypad, kernel);
+    end
     tmp = fast_deconv_bregman(ypad, kernel, opts.nb_lambda, opts.nb_alpha);
     latent(:, :, c) = tmp(bhs + 1 : end - bhs, bhs + 1 : end - bhs);
 %     latent(:,:,c) = deconvSps(ori_B(:,:,c),kernel,0.003,100);
     %% using the edge preserveing model
 %      latent(:,:,c) = deconvSps_adaptive_L1(ori_B(:,:,c),kernel,0.003,200,structure);
 end
+
 
 
 

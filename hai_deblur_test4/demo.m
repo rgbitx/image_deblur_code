@@ -17,11 +17,12 @@ opt.display = 1;
 % filename = 'image/wall.png';
 % filename = 'test1_blur.png';
 % filename = 'image/roma.png';
-% filename = 'image/image9.png';
+filename = 'image/image9.png';
 % filename = 'image/grass_blur_using_Levin01_04_27.png';
 % filename = 'image/structure.bmp';
 % filename = 'lyndsey.png';
-filename = 'image10_large.png';
+% filename = 'image10_large.png';
+% filename ='chalk_drawing.jpg';
 
 opt.kernel_sizeh = 35; opt.kernel_sizew = 35;
 
@@ -91,6 +92,7 @@ ori_B =  im2double(y);
 tic
 [kernel, inter_latent] = deconv_main(y_gray_P, ori_B, opt);
 toc
+
 figure, imagesc(kernel)
 figure, imshow(inter_latent)
 

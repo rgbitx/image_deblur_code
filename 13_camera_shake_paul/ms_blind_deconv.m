@@ -128,6 +128,8 @@ for s = 1:num_scales
 end
 kernel = k;
 
+kernel(kernel==0) = 1e-8;
+
 padsize = bhs;
 if opts.decon_kernel,
    
@@ -153,11 +155,13 @@ if opts.decon_kernel,
          deblur = ycbcr2rgb(deblur);
       end;
    else
+      
       for j = 1:3
          ypad = padarray(yorig(:, :, j), [1 1] * bhs, 'replicate', 'both');
-%          for a = 1:4
-%             ypad = edgetaper(ypad, kernel);
-%          end;
+        
+         for a = 1:4
+            ypad = edgetaper(ypad, kernel);
+         end;
          
          tmp = fast_deconv_bregman(ypad, kernel, opts.nb_lambda, opts.nb_alpha);
          deblur(:, :, j) = tmp(bhs + 1 : end - bhs, bhs + 1 : end - bhs);
